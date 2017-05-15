@@ -1,0 +1,43 @@
+version: '2'
+services:
+  web: #&app_base
+    build:
+      context: .
+      dockerfile: Dockerfile.development
+    command: bundle exec rails s -p 3000 -b '0.0.0.0'
+    environment:
+      - DATABASE_HOST=db
+      - DATABASE_PORT=5432
+      - DATABASE_USER=postgres
+      - DATABASE_PASSWORD=mysecretpassword1234
+    volumes:
+      - .:/app
+    ports:
+      - 3000:3000
+    links:
+      - db
+    tty: true
+    stdin_open: true
+    # volumes_from:
+    #   - bundle
+  # spring:
+  #   <<: *app_base
+  #   command: bundle exec spring server
+  #   ports: []
+  #   tty: false
+  #   stdin_open: false
+  db:
+    image: postgres:9.6.2
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=mysecretpassword1234
+    volumes_from:
+      - data
+  data:
+    image: busybox:latest
+    volumes:
+      - /var/lib/postgresql/data
+  bundle:
+    image: busybox:latest
+    volumes:
+      - /bundle
