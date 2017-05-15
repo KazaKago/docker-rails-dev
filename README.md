@@ -13,7 +13,7 @@ docker-compose run --rm web rails new . --force --skip-bundle
 
 2. 起動
 ```bash
-docker-compose up
+docker-compose up -d
 open  http://localhost:3000
 ```
 
@@ -60,7 +60,7 @@ docker-compose run --rm web rails db:create
 
 5. 起動
 ```bash
-docker-compose up
+docker-compose up -d
 open  http://localhost:3000
 ```
 
@@ -73,5 +73,5 @@ docker-compose run --rm web bundle install
 
 2. イメージを再構築&起動
 ```bash
-docker-compose up
+docker-compose up -d
 ```
