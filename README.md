@@ -1,10 +1,29 @@
-# 必要物
+# rails開発完全Docker化
+
+ホストマシンへrubyをインストールせずにrails newからdeployまでを行う手順
+
+## 必要物
 - Docckerfile.development
 - docker-compose.yml
 - Gemfile
 - Gemfile.lock
 
-# 手順(without database)
+## 手順
+
+### 既存プロジェクトがある場合
+
+1. 既存プロジェクトのルート階層に以下の2つのファイルを配置
+- Docckerfile.development
+- docker-compose.yml
+
+2. 起動
+```bash
+docker-compose up -d
+```
+
+### 新規プロジェクトから作成する場合
+
+#### - データベースなし
 
 1. Railsプロジェクト作成
 ```bash
@@ -17,7 +36,7 @@ docker-compose up -d
 open  http://localhost:3000
 ```
 
-# 手順(with postgres)
+#### - postgresデータベース
 
 1. Railsプロジェクト作成
 ```bash
@@ -64,7 +83,7 @@ docker-compose up -d
 open  http://localhost:3000
 ```
 
-# Gemを追加・変更した場合
+### Gemを追加・変更した場合
 
 1. Bundle installを実行してGemfile.lockを更新
 ```bash
