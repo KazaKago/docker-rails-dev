@@ -1,5 +1,6 @@
-# rails開発完全Docker化
+# Compose and Rails
 
+https://docs.docker.com/compose/rails/  
 ホストマシンへrubyをインストールせずにrails newからdeployまでを行う手順
 
 ## 必要物
@@ -16,39 +17,36 @@
 - Docckerfile.development
 - docker-compose.yml
 
-2. 起動
+3. DB初期化
 ```bash
-docker-compose up -d
+docker-compose run --rm web rake db:create
 ```
 
-### 新規プロジェクトから作成する場合
-
-#### - データベースなし
-
-1. Railsプロジェクト作成
-```bash
-docker-compose run --rm web rails new . --force --skip-bundle
-```
-
-2. 起動
+4. 起動
 ```bash
 docker-compose up -d
 open  http://localhost:3000
 ```
 
-#### - postgresデータベース
+### 新規プロジェクトから作成する場合
 
-1. Railsプロジェクト作成
+1. プロジェクトを作成するフォルダに以下の4つのファイルを配置
+- Docckerfile.development
+- docker-compose.yml
+- Gemfile
+- Gemfile.lock
+
+2. Railsプロジェクト作成
 ```bash
 docker-compose run --rm web rails new . --force --database=postgresql --skip-bundle
 ```
 
-2. db:createを叩くためGemfile.lock更新後のイメージを再構築
+3. db:createを叩くためGemfile.lock更新後のイメージを再構築
 ```bash
 docker-compose build
 ```
 
-3. config/database.ymlをDockerの設定値から取得するように変更
+4. config/database.ymlをDockerの設定値から取得するように変更
 ```yml
 default: &default
   adapter: postgresql
@@ -72,18 +70,18 @@ production:
   database: app_production
 ```
 
-4. DB初期化
+5. DB初期化
 ```bash
-docker-compose run --rm web rails db:create
+docker-compose run --rm web rake db:create
 ```
 
-5. 起動
+6. 起動
 ```bash
 docker-compose up -d
 open  http://localhost:3000
 ```
 
-### Gemを追加・変更した場合
+### Gemfileを変更した場合
 
 1. Bundle installを実行してGemfile.lockを更新
 ```bash
@@ -93,4 +91,5 @@ docker-compose run --rm web bundle install
 2. イメージを再構築&起動
 ```bash
 docker-compose up -d
+open  http://localhost:3000
 ```
