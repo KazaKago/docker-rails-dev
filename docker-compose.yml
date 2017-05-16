@@ -18,8 +18,6 @@ services:
       - db
     tty: true
     stdin_open: true
-    # volumes_from:
-    #   - bundle
   # spring:
   #   <<: *app_base
   #   command: bundle exec spring server
@@ -37,7 +35,3 @@ services:
     image: busybox:latest
     volumes:
       - /var/lib/postgresql/data
-  bundle:
-    image: busybox:latest
-    volumes:
-      - /bundle
