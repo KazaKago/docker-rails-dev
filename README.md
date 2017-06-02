@@ -14,7 +14,7 @@ https://docs.docker.com/compose/rails/
 ### 既存プロジェクトがある場合
 
 1. 既存プロジェクトのルート階層に以下の2つのファイルを配置
-- Docckerfile.development
+- Docckerfile
 - docker-compose.yml
 
 3. DB初期化
@@ -31,14 +31,14 @@ open  http://localhost:3000
 ### 新規プロジェクトから作成する場合
 
 1. プロジェクトを作成するフォルダに以下の4つのファイルを配置
-- Docckerfile.development
+- Docckerfile
 - docker-compose.yml
 - Gemfile
 - Gemfile.lock
 
 2. Railsプロジェクト作成
 ```bash
-docker-compose run --rm web rails new . --force --database=postgresql --skip-bundle
+docker-compose run --rm web rails new . --force --database=mysql --skip-bundle
 ```
 
 3. db:createを叩くためGemfile.lock更新後のイメージを再構築
@@ -49,13 +49,13 @@ docker-compose build
 4. config/database.ymlをDockerの設定値から取得するように変更
 ```yml
 default: &default
-  adapter: postgresql
+  adapter: mysql2
   encoding: unicode
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   username: <%= ENV.fetch('DATABASE_USER') { 'root' } %>
   password: <%= ENV.fetch('DATABASE_PASSWORD') { 'password' } %>
   host: <%= ENV.fetch('DATABASE_HOST') { 'localhost' } %>
-  port: <%= ENV.fetch('DATABASE_PORT') { 5432 } %>
+  port: <%= ENV.fetch('DATABASE_PORT') { 3306 } %>
 
 development:
   <<: *default

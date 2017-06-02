@@ -1,15 +1,13 @@
 version: '2'
 services:
   web: #&app_base
-    build:
-      context: .
-      dockerfile: Dockerfile.development
+    build: .
     command: bundle exec rails s -p 3000 -b '0.0.0.0'
     environment:
       - DATABASE_HOST=db
-      - DATABASE_PORT=5432
-      - DATABASE_USER=postgres
-      - DATABASE_PASSWORD=mysecretpassword1234
+      - DATABASE_PORT=3306
+      - DATABASE_USER=dbuser
+      - DATABASE_PASSWORD=dbp4ss
     volumes:
       - .:/app
     ports:
@@ -25,13 +23,18 @@ services:
   #   tty: false
   #   stdin_open: false
   db:
-    image: postgres:9.6.2
+    image: mysql:latest
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=mysecretpassword1234
+      - MYSQL_ROOT_PASSWORD=p4SSW0rd
+      - MYSQL_DATABASE=demo
+      - MYSQL_USER=dbuser
+      - MYSQL_PASSWORD=dbp4ss
+    volumes:
+        - ./mysql/init/:/docker-entrypoint-initdb.d
     volumes_from:
       - data
   data:
     image: busybox:latest
     volumes:
-      - /var/lib/postgresql/data
+      - /var/lib/mysql
+    tty: true
