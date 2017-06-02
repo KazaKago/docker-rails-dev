@@ -4,7 +4,7 @@ https://docs.docker.com/compose/rails/
 ホストマシンへrubyをインストールせずにrails newからdeployまでを行う手順
 
 ## 必要物
-- Docckerfile.development
+- Docckerfile
 - docker-compose.yml
 - Gemfile
 - Gemfile.lock
