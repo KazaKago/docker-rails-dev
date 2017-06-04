@@ -80,6 +80,8 @@ docker-compose up -d
 open  http://localhost:3000
 ```
 
+## その他各種操作
+
 ### Gemfileを変更した場合
 
 1. Bundle installを実行してGemfile.lockを更新
@@ -91,4 +93,11 @@ docker-compose run --rm web bundle install
 ```bash
 docker-compose up -d
 open  http://localhost:3000
+```
+
+### DBの中身を削除する場合
+
+1. --volumesオプションを付与してコンテナを削除
+```
+docker-compose down --volumes
 ```
