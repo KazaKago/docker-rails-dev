@@ -1,4 +1,4 @@
-version: '2'
+version: '3'
 services:
   web: #&app_base
     build: .
@@ -26,11 +26,7 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=password
     volumes:
-        - ./mysql/init/:/docker-entrypoint-initdb.d
-    volumes_from:
-      - data
-  data:
-    image: busybox:latest
-    volumes:
-      - /var/lib/mysql
-    tty: true
+      - ./mysql/init/:/docker-entrypoint-initdb.d
+      - db_data:/var/lib/mysql
+volumes:
+  db_data:
