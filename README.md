@@ -118,7 +118,7 @@ docker-compose down --volumes
 docker-compose run --rm web yarn add moment
 ```
 
-2． app/javascript/packs/application.jsで使用するライブラリをインポートする
+2. app/javascript/packs/application.jsで使用するライブラリをインポートする
 ```yml
 import moment from "moment";
 ```
