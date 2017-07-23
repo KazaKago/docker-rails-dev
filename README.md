@@ -26,7 +26,7 @@ docker-compose run --rm web rails new . --force --database=mysql --skip-bundle
 
 3. WebPack変更監視サーバの自動立ち上げのためのGemfileにforemanを追加
 ```yml
-gem 'foreman', '~> 0.84.0'
+gem 'foreman'
 ```
 
 4. WebPackerを使うためにGemfileに以下を追記
