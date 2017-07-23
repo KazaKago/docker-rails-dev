@@ -8,45 +8,54 @@ https://docs.docker.com/compose/rails/
 - docker-compose.yml
 - Gemfile
 - Gemfile.lock
+- Procfile
 
 ## 手順
 
-### 既存プロジェクトがある場合
-
-1. 既存プロジェクトのルート階層に以下の2つのファイルを配置
-- Docckerfile
-- docker-compose.yml
-
-3. DB初期化
-```bash
-docker-compose run --rm web rake db:create
-```
-
-4. 起動
-```bash
-docker-compose up -d
-open  http://localhost:3000
-```
-
-### 新規プロジェクトから作成する場合
-
-1. プロジェクトを作成するフォルダに以下の4つのファイルを配置
+1. プロジェクトを作成するフォルダに以下の5つのファイルを配置
 - Docckerfile
 - docker-compose.yml
 - Gemfile
 - Gemfile.lock
+- Procfile
 
 2. Railsプロジェクト作成
 ```bash
 docker-compose run --rm web rails new . --force --database=mysql --skip-bundle
 ```
 
-3. db:createを叩くためGemfile.lock更新後のイメージを再構築
+3. WebPack変更監視サーバの自動立ち上げのためのGemfileにforemanを追加
+```yml
+gem 'foreman', '~> 0.84.0'
+```
+
+4. WebPackerを使うためにGemfileに以下を追記
+```yml
+# Transpile app-like JavaScript. Read more: https://github.com/rails/webpacker
+gem 'webpacker'
+```
+
+5. Gemfileを更新したのでBundle installを実行してGemfile.lockを更新
+```bash
+docker-compose run --rm web bundle install
+```
+
+6. webpacker:installやdb:createを叩くためGemfile.lock更新後のイメージを再構築
 ```bash
 docker-compose build
 ```
 
-4. config/database.ymlをDockerの設定値から取得するように変更
+7. WebPackerを使うために以下のコマンドを実行して関連ツールをインストール
+```bash
+docker-compose run --rm web bin/rails webpacker:install
+```
+
+8. WebPackerでインストールしたjsをインポートするためにapp/views/layouts/application.html.erbへ以下の記述をする
+```xml
+<%= javascript_pack_tag 'application' %>
+```
+
+9. config/database.ymlをDockerの設定値から取得するように変更
 ```yml
 default: &default
   adapter: mysql2
@@ -69,12 +78,12 @@ production:
   database: app_production
 ```
 
-5. DB初期化
+10. DB初期化
 ```bash
 docker-compose run --rm web rake db:create
 ```
 
-6. 起動
+11. 起動
 ```bash
 docker-compose up -d
 open  http://localhost:3000
@@ -89,7 +98,7 @@ open  http://localhost:3000
 docker-compose run --rm web bundle install
 ```
 
-2. イメージを再構築&起動
+2. Gemfile.lock更新後のイメージを再構築&起動
 ```bash
 docker-compose up -d
 open  http://localhost:3000
@@ -98,6 +107,18 @@ open  http://localhost:3000
 ### DBの中身を削除する場合
 
 1. --volumesオプションを付与してコンテナを削除
-```
+```bash
 docker-compose down --volumes
+```
+
+### Javascriptライブラリを追加したい場合
+
+1. yarn経由でインストールする
+```bash
+docker-compose run --rm web yarn add moment
+```
+
+2． app/javascript/packs/application.jsで使用するライブラリをインポートする
+```yml
+import moment from "moment";
 ```
