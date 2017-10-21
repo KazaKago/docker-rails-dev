@@ -1,19 +1,13 @@
-# Compose and Rails
+# Rails Starter kit
 
 https://docs.docker.com/compose/rails/  
-ホストマシンへrubyをインストールせずにrails newからdeployまでを行う手順
-
-## 必要物
-- Docckerfile
-- docker-compose.yml
-- Gemfile
-- Gemfile.lock
-- Procfile
+https://github.com/rails/webpacker  
+ホストマシンへrubyをインストールせずにRails with MySQL+WebPack開発環境を構築する手順
 
 ## 手順
 
 1. プロジェクトを作成するフォルダに以下の5つのファイルを配置
-- Docckerfile
+- Dockerfile
 - docker-compose.yml
 - Gemfile
 - Gemfile.lock
@@ -21,41 +15,30 @@ https://docs.docker.com/compose/rails/
 
 2. Railsプロジェクト作成
 ```bash
-docker-compose run --rm web rails new . --force --database=mysql --skip-bundle
+docker-compose run --rm web rails new . --force --database=mysql --skip-bundle --webpack
 ```
 
-3. WebPack変更監視サーバの自動立ち上げのためのGemfileにforemanを追加
+3. WebPack変更監視サーバ(bin/webpack-dev-server)の自動立ち上げのためのGemfileにforemanを追加
 ```yml
 gem 'foreman'
 ```
 
-4. WebPackerを使うためにGemfileに以下を追記
-```yml
-# Transpile app-like JavaScript. Read more: https://github.com/rails/webpacker
-gem 'webpacker'
-```
-
-5. Gemfileを更新したのでBundle installを実行してGemfile.lockを更新
+4. Gemfileを更新したのでBundle installを実行してGemfile.lockを更新
 ```bash
 docker-compose run --rm web bundle install
 ```
 
-6. webpacker:installやdb:createを叩くためGemfile.lock更新後のイメージを再構築
+5. db:createを叩くためGemfile.lock更新後のイメージを再構築
 ```bash
 docker-compose build
 ```
 
-7. WebPackerを使うために以下のコマンドを実行して関連ツールをインストール
-```bash
-docker-compose run --rm web bin/rails webpacker:install
-```
-
-8. WebPackerでインストールしたjsをインポートするためにapp/views/layouts/application.html.erbへ以下の記述をする
+6. WebPackerでインストールしたjsをインポートするためにapp/views/layouts/application.html.erbへ以下の記述をする
 ```xml
 <%= javascript_pack_tag 'application' %>
 ```
 
-9. config/database.ymlをDockerの設定値から取得するように変更
+7. config/database.ymlをDockerの設定値から取得するように変更
 ```yml
 default: &default
   adapter: mysql2
@@ -78,12 +61,12 @@ production:
   database: app_production
 ```
 
-10. DB初期化
+8. DB初期化
 ```bash
-docker-compose run --rm web rake db:create
+docker-compose run --rm web rails db:create
 ```
 
-11. 起動
+9. 起動
 ```bash
 docker-compose up -d
 open  http://localhost:3000
