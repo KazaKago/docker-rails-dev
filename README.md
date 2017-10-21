@@ -1,4 +1,4 @@
-# Rails Starter kit
+# Rails Starter Kit
 
 https://docs.docker.com/compose/rails/  
 https://github.com/rails/webpacker  
