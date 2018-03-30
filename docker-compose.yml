@@ -1,6 +1,6 @@
 version: '3'
 services:
-  web: #&app_base
+  web:
     build: .
     command: bundle exec foreman start
     environment:
@@ -11,22 +11,17 @@ services:
       - .:/app
     ports:
       - 3000:3000
-      - 8080:8080
     links:
       - db
     tty: true
     stdin_open: true
-  # spring:
-  #   <<: *app_base
-  #   command: bundle exec spring server
-  #   ports: []
-  #   tty: false
-  #   stdin_open: false
   db:
     image: mysql:latest
     environment:
       - MYSQL_ROOT_PASSWORD=password
     volumes:
       - db_data:/var/lib/mysql
+    ports:
+      - 3306:3306
 volumes:
   db_data:
