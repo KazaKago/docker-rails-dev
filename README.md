@@ -1,9 +1,9 @@
 # Rails Starter Kit
 
 https://docs.docker.com/compose/rails/  
-ホストマシンへrubyをインストールせずDockerコンテナへRails with MySQL+WebPackの開発環境を構築する手順
+ホストマシンへrubyをインストールせずDockerコンテナへRails + MySQL + WebPackの開発環境を構築する手順
 
-## 手順
+## プロジェクト生成
 
 1. プロジェクトを作成するフォルダに以下の5つのファイルを配置
 - Dockerfile
@@ -27,17 +27,12 @@ gem 'foreman'
 docker-compose run --rm web bundle install
 ```
 
-5. db:createを叩くためGemfile.lock更新後のイメージを再構築
-```bash
-docker-compose build
-```
-
-6. WebPackerでインストールしたjsをインポートするためにapp/views/layouts/application.html.erbへ以下の記述をする
+5. WebPackerでインストールしたjsをインポートするためにapp/views/layouts/application.html.erbへ以下の記述をする
 ```xml
 <%= javascript_pack_tag 'application' %>
 ```
 
-7. config/database.ymlをDockerの設定値から取得するように変更
+6. config/database.ymlをDockerの設定値から取得するように変更
 ```yml
 default: &default
   adapter: mysql2
@@ -60,12 +55,26 @@ production:
   database: app_production
 ```
 
-8. DB初期化
+## コンテナ毎初期化
+
+1. db:createを叩くためGemfile.lock固定後のイメージを構築
+```bash
+docker-compose build
+```
+
+2. DB初期化
 ```bash
 docker-compose run --rm web rails db:create
 ```
 
-9. 起動
+3. yarnインストール
+```bash
+docker-compose run --rm web yarn install
+```
+
+## 立ち上げ
+
+1. 起動
 ```bash
 docker-compose up -d
 open  http://localhost:3000
