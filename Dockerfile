@@ -19,6 +19,3 @@ ADD Gemfile .
 ADD Gemfile.lock .
 RUN bundle install
 ADD . .
-
-# Setup Yarn (if needed)
-RUN yarn install
