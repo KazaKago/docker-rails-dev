@@ -67,11 +67,6 @@ docker-compose build
 docker-compose run --rm web rails db:create
 ```
 
-3. yarnインストール（プロジェクト生成時は自動で--webpackオプションによりyarn installが走るので不要）
-```bash
-docker-compose run --rm web yarn install
-```
-
 ## 立ち上げ
 
 1. 起動

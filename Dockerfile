@@ -12,9 +12,13 @@ RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources
 RUN apt-get update && apt-get install -y yarn
 
 # Setup Rails
+# https://docs.docker.com/compose/rails/
 RUN mkdir /app
 WORKDIR /app
 ADD Gemfile .
 ADD Gemfile.lock .
 RUN bundle install
 ADD . .
+
+# Setup Yarn (if needed)
+RUN yarn install
