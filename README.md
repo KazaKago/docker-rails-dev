@@ -27,7 +27,7 @@ gem 'foreman'
 docker-compose run --rm web bundle install
 ```
 
-5. WebPackerでインストールしたjsをインポートするためにapp/views/layouts/application.html.erbへ以下の記述をする
+5. WebPackでインストールしたjsをインポートするためにapp/views/layouts/application.html.erbへ以下の記述をする
 ```xml
 <%= javascript_pack_tag 'application' %>
 ```
@@ -55,49 +55,52 @@ production:
   database: app_production
 ```
 
-## コンテナ毎初期化
+## javascriptパッケージの構築
 
-1. db:createを叩くためGemfile.lock固定後のイメージを構築
 ```bash
-docker-compose build
+docker-compose run --rm web yarn install
 ```
 
-2. DB初期化
+## データベース構築
+
 ```bash
 docker-compose run --rm web rails db:create
 ```
 
 ## 立ち上げ
 
-1. 起動
 ```bash
 docker-compose up -d
 open  http://localhost:3000
+```
+
+## 開発用WebPack監視サーバー起動
+
+```bash
+docker-compose exec web bundle exec ./bin/webpack-dev-server
 ```
 
 ## その他各種操作
 
-### Gemfileを変更した場合
+### DBの中身を削除する時
 
-1. Bundle installを実行してGemfile.lockを更新
-```bash
-docker-compose run --rm web bundle install
-```
-
-2. Gemfile.lock更新後のイメージを再構築&起動
-```bash
-docker-compose up -d
-open  http://localhost:3000
-```
-
-### DBの中身を削除する場合
-
-1. --volumesオプションを付与してコンテナを削除
 ```bash
 docker-compose down --volumes
 ```
 
-### Javascriptライブラリを追加したい場合
+### Gemを追加したい時
+
+1. Gemfileへ追記する
+```ruby
+gem 'rails', '~> 5.1.6'
+```
+
+2. bundleインストールを叩いてgemfile.lockを更新
+```bash
+docker-compose run --rm web bundle install
+```
+
+### Javascriptライブラリを追加したい時
 
 1. yarn経由でインストールする
 ```bash
