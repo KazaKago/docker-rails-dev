@@ -2,7 +2,7 @@ version: '3'
 services:
   web:
     build: .
-    command: bundle exec foreman start
+    command: rails s
     environment:
       - DATABASE_HOST=db
       - DATABASE_USER=root

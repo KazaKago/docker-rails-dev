@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y yarn
 # https://docs.docker.com/compose/rails/
 RUN mkdir /app
 WORKDIR /app
-ADD Gemfile .
-ADD Gemfile.lock .
+COPY Gemfile .
+COPY Gemfile.lock .
 RUN bundle install
-ADD . .
+COPY . .
