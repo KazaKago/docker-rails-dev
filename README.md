@@ -13,7 +13,7 @@ https://docs.docker.com/compose/rails/
 
 2. Railsプロジェクト作成
 ```bash
-docker-compose run --rm web rails new . --force --database=mysql --webpack
+docker-compose run --rm web rails new . --force --database=mysql
 ```
 
 5. WebPackでインストールしたjsをインポートするためにapp/views/layouts/application.html.erbへ以下の記述をする
