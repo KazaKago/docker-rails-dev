@@ -1,32 +1,27 @@
 # Rails Starter Kit
 
 https://docs.docker.com/compose/rails/  
-ホストマシンへrubyをインストールせずDockerコンテナへRails + MySQL + WebPackの開発環境を構築する手順
+ホストマシンへrubyをインストールせずDockerコンテナへRails + MySQLの開発環境を構築する手順
 
-## プロジェクト生成
+## プロジェクト構築
 
-1. プロジェクトを作成するフォルダに以下の5つのファイルを配置
+### 1. プロジェクトを作成するフォルダに以下の5つのファイルを配置
 - Dockerfile
 - docker-compose.yml
 - Gemfile
 - Gemfile.lock
+- entrypoint.sh
 
-2. Railsプロジェクト作成
+### 2. Railsプロジェクト作成
 ```bash
-docker-compose run --rm web rails new . --force --database=mysql
+docker-compose run --rm web rails new . --force --no-deps --database=mysql
 ```
 
-5. WebPackでインストールしたjsをインポートするためにapp/views/layouts/application.html.erbへ以下の記述をする
-```xml
-<%= javascript_pack_tag 'application' %>
-<%= stylesheet_pack_tag 'application' %>
-```
-
-6. config/database.ymlをDockerの設定値から取得するように変更
+### 3. `config/database.yml`をDockerの設定値から取得するように変更
 ```yml
 default: &default
   adapter: mysql2
-  encoding: utf8
+  encoding: utf8mb4
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   username: <%= ENV.fetch('DATABASE_USER') { 'root' } %>
   password: <%= ENV.fetch('DATABASE_PASSWORD') { 'password' } %>
@@ -45,19 +40,13 @@ production:
   database: app_production
 ```
 
-## javascriptパッケージの構築
+### 4. Dockerイメージを構築する
 
-1. yarnでPackageインストール
 ```bash
-docker-compose run --rm web yarn install
+docker-compose build
 ```
 
-2. webpackでビルド
-```bash
-docker-compose run --rm web ./bin/webpack
-```
-
-## データベース構築
+### 5. データベース構築
 
 ```bash
 docker-compose run --rm web rails db:create
@@ -76,39 +65,32 @@ open  http://localhost:3000
 docker-compose exec web ./bin/webpack-dev-server
 ```
 
-## その他各種操作
 
-### DBの中身を削除する時
+## Gemを追加したい時
 
-```bash
-docker-compose down --volumes
-```
-
-### Gemを追加したい時
-
-1. Gemfileへ追記する
+### 1. Gemfileへ追記する
 ```ruby
 gem 'rails', '~> 5.1.6'
 ```
 
-2. bundleインストールを叩いてgemfile.lockを更新
+### 2. bundleインストールを叩いてgemfile.lockを更新
 ```bash
 docker-compose run --rm web bundle install
 ```
 
-### Javascriptライブラリを追加したい時
+## Javascriptライブラリを追加したい時
 
-1. yarn経由でインストールする
+### 1. yarn経由でインストールする
 ```bash
 docker-compose run --rm web yarn add moment
 ```
 
-2. app/javascript/packs/application.jsで使用するライブラリをインポートする
+### 2. app/javascript/packs/application.jsで使用するライブラリをインポートする
 ```yml
 import moment from "moment";
 ```
 
-3. webpackでビルド(webpack-dev-serverを立ち上げている場合は不要)
+### 3. webpackでビルド(webpack-dev-serverを立ち上げている場合は不要)
 ```bash
 docker-compose run --rm web ./bin/webpack
 ```
